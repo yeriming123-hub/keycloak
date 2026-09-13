@@ -383,8 +383,16 @@ public abstract class AbstractSamlAuthenticationHandler implements SamlAuthentic
                     ? AssertionUtil.decryptAssertion(responseType, deployment.getDecryptionKey())
                     : AssertionUtil.getAssertionElement(responseHolder);
             assertion = responseType.getAssertions().get(0).getAssertion();
+            
+            // Require a bearer SubjectConfirmation with SubjectConfirmationData
+            SubjectConfirmationDataType subjectConfirmationData = getSubjectConfirmationData(assertion);
+            if (subjectConfirmationData == null) {
+                log.error("Assertion must contain a bearer SubjectConfirmation with SubjectConfirmationData");
+                return initiateLogin(false);
+            }
+            
             ConditionsValidator.Builder cvb = new ConditionsValidator.Builder(assertion.getID(), assertion.getConditions(), destinationValidator);
-            SubjectConfirmationDataValidator.Builder scdvb = new SubjectConfirmationDataValidator.Builder(assertion.getID(), getSubjectConfirmationData(assertion), destinationValidator)
+            SubjectConfirmationDataValidator.Builder scdvb = new SubjectConfirmationDataValidator.Builder(assertion.getID(), subjectConfirmationData, destinationValidator)
                     .clockSkewInMillis(deployment.getIDP().getAllowedClockSkew());
             try {
                 cvb.clockSkewInMillis(deployment.getIDP().getAllowedClockSkew());
