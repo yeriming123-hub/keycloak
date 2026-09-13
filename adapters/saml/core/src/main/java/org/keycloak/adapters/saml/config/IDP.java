@@ -36,7 +36,7 @@ public class IDP implements Serializable {
         private String bindingUrl;
         private String assertionConsumerServiceUrl;
         private Boolean validateAssertionSignature;
-        private boolean signaturesRequired = false;
+        private boolean signaturesRequired = true;
 
         public boolean isSignRequest() {
             return signRequest == null ? signaturesRequired : signRequest;
@@ -55,7 +55,7 @@ public class IDP implements Serializable {
         }
 
         public boolean isValidateAssertionSignature() {
-            return validateAssertionSignature == null ? false : validateAssertionSignature;
+            return validateAssertionSignature == null ? signaturesRequired : validateAssertionSignature;
         }
 
         public void setValidateAssertionSignature(Boolean validateAssertionSignature) {
@@ -108,7 +108,7 @@ public class IDP implements Serializable {
         private String responseBinding;
         private String postBindingUrl;
         private String redirectBindingUrl;
-        private boolean signaturesRequired = false;
+        private boolean signaturesRequired = true;
 
         public boolean isSignRequest() {
             return signRequest == null ? signaturesRequired : signRequest;
@@ -300,7 +300,7 @@ public class IDP implements Serializable {
     private SingleLogoutService singleLogoutService;
     private List<Key> keys;
     private AdapterHttpClientConfig httpClientConfig = new HttpClientConfig();
-    private boolean signaturesRequired = false;
+    private boolean signaturesRequired = true;
     private String metadataUrl;
     private Integer allowedClockSkew;
     private TimeUnit allowedClockSkewUnit;
