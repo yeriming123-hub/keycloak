@@ -12,9 +12,9 @@ runs:
     - id: check-jobs
       name: Check jobs
       shell: bash
+      env:
+        JOBS: ${{ inputs.jobs }}
       run: |
-        JOBS='${{ inputs.jobs }}'
-
         echo "Job status:"
         echo $JOBS | jq -r 'to_entries[] | " - \(.key): \(.value.result)"'
         
