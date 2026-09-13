@@ -245,7 +245,7 @@ public class ClientResource {
     @Tag(name = KeycloakOpenAPI.Admin.Tags.CLIENTS)
     @Operation()
     public Response getInstallationProvider(@PathParam("providerId") String providerId) {
-        auth.clients().requireView(client);
+        auth.clients().requireManage(client);
 
         ClientInstallationProvider provider = session.getProvider(ClientInstallationProvider.class, providerId);
         if (provider == null) throw new NotFoundException("Unknown Provider");
