@@ -1073,32 +1073,48 @@ public class SAMLEndpoint {
     }
 
     private boolean validateSubjectConfirmationData(ResponseType responseType, String expectedRequestId) {
-        // If present, Assertion > Subject > Confirmation > SubjectConfirmationData > InResponseTo must also be validated
-        if (responseType.getAssertions().isEmpty())
-            return true;
+        // Assertion > Subject > Confirmation > SubjectConfirmationData must be validated
+        if (responseType.getAssertions().isEmpty()) {
+            logger.error("Response Validation Error: Assertion must be present");
+            return false;
+        }
 
         AssertionType assertion = responseType.getAssertions().get(0).getAssertion();
         SubjectType subjectElement = assertion.getSubject();
-        if (subjectElement != null) {
-            if (subjectElement.getConfirmation() != null && !subjectElement.getConfirmation().isEmpty()) {
-                SubjectConfirmationType subjectConfirmationElement = subjectElement.getConfirmation().stream()
-                        .filter(c -> JBossSAMLURIConstants.SUBJECT_CONFIRMATION_BEARER.get().equals(c.getMethod()))
-                        .findFirst().orElse(null);
+        if (subjectElement == null) {
+            logger.error("Response Validation Error: Assertion must contain a Subject");
+            return false;
+        }
+        
+        if (subjectElement.getConfirmation() == null || subjectElement.getConfirmation().isEmpty()) {
+            logger.error("Response Validation Error: Assertion Subject must contain at least one SubjectConfirmation");
+            return false;
+        }
+        
+        SubjectConfirmationType subjectConfirmationElement = subjectElement.getConfirmation().stream()
+                .filter(c -> JBossSAMLURIConstants.SUBJECT_CONFIRMATION_BEARER.get().equals(c.getMethod()))
+                .findFirst().orElse(null);
 
-                if (subjectConfirmationElement != null) {
-                    SubjectConfirmationDataType subjectConfirmationDataElement = subjectConfirmationElement.getSubjectConfirmationData();
-                    SubjectConfirmationDataValidator.Builder scdvb = new SubjectConfirmationDataValidator.Builder(assertion.getID(), subjectConfirmationDataElement, destinationValidator)
-                            .inResponseTo(expectedRequestId)
-                            .clockSkewInMillis(1000 * config.getAllowedClockSkew());
-                    if (responseType.getDestination() != null) {
-                        scdvb.allowedRecipient(responseType.getDestination());
-                    }
+        if (subjectConfirmationElement == null) {
+            logger.error("Response Validation Error: Assertion Subject must contain a bearer SubjectConfirmation");
+            return false;
+        }
+        
+        SubjectConfirmationDataType subjectConfirmationDataElement = subjectConfirmationElement.getSubjectConfirmationData();
+        if (subjectConfirmationDataElement == null) {
+            logger.error("Response Validation Error: Bearer SubjectConfirmation must contain SubjectConfirmationData");
+            return false;
+        }
+        
+        SubjectConfirmationDataValidator.Builder scdvb = new SubjectConfirmationDataValidator.Builder(assertion.getID(), subjectConfirmationDataElement, destinationValidator)
+                .inResponseTo(expectedRequestId)
+                .clockSkewInMillis(1000 * config.getAllowedClockSkew());
+        if (responseType.getDestination() != null) {
+            scdvb.allowedRecipient(responseType.getDestination());
+        }
 
-                    if (!scdvb.build().isValid()) {
-                        return false;
-                    }
-                }
-            }
+        if (!scdvb.build().isValid()) {
+            return false;
         }
 
         return true;
