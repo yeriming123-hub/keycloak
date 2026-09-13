@@ -17,7 +17,6 @@
 package org.keycloak.subsystem.adapter.saml.extension;
 
 import org.jboss.as.controller.PathElement;
-import org.jboss.as.controller.ReloadRequiredRemoveStepHandler;
 import org.jboss.as.controller.SimpleResourceDefinition;
 import org.jboss.as.controller.operations.common.GenericSubsystemDescribeHandler;
 import org.jboss.as.controller.registry.ManagementResourceRegistration;
@@ -33,7 +32,7 @@ public class SecureDeploymentDefinition extends SimpleResourceDefinition {
         super(PathElement.pathElement(Constants.Model.SECURE_DEPLOYMENT),
                 KeycloakSamlExtension.getResourceDescriptionResolver(Constants.Model.SECURE_DEPLOYMENT),
                 SecureDeploymentAddHandler.INSTANCE,
-                ReloadRequiredRemoveStepHandler.INSTANCE);
+                SecureDeploymentRemoveHandler.INSTANCE);
     }
 
     @Override

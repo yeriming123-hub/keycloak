@@ -26,7 +26,6 @@ import org.jboss.as.controller.ListAttributeDefinition;
 import org.jboss.as.controller.OperationStepHandler;
 import org.jboss.as.controller.PathElement;
 import org.jboss.as.controller.PropertiesAttributeDefinition;
-import org.jboss.as.controller.ReloadRequiredRemoveStepHandler;
 import org.jboss.as.controller.ReloadRequiredWriteAttributeHandler;
 import org.jboss.as.controller.SimpleAttributeDefinition;
 import org.jboss.as.controller.SimpleAttributeDefinitionBuilder;
@@ -134,7 +133,7 @@ public class ServiceProviderDefinition extends SimpleResourceDefinition {
         super(PathElement.pathElement(Constants.Model.SERVICE_PROVIDER),
                 KeycloakSamlExtension.getResourceDescriptionResolver(Constants.Model.SERVICE_PROVIDER),
                 ServiceProviderAddHandler.INSTANCE,
-                ReloadRequiredRemoveStepHandler.INSTANCE);
+                ServiceProviderRemoveHandler.INSTANCE);
     }
 
     @Override

@@ -22,7 +22,6 @@ import org.jboss.as.controller.AttributeDefinition;
 import org.jboss.as.controller.ObjectTypeAttributeDefinition;
 import org.jboss.as.controller.OperationStepHandler;
 import org.jboss.as.controller.PathElement;
-import org.jboss.as.controller.ReloadRequiredRemoveStepHandler;
 import org.jboss.as.controller.ReloadRequiredWriteAttributeHandler;
 import org.jboss.as.controller.SimpleAttributeDefinition;
 import org.jboss.as.controller.SimpleAttributeDefinitionBuilder;
@@ -93,7 +92,7 @@ public class KeyDefinition extends SimpleResourceDefinition {
         super(PathElement.pathElement(Constants.Model.KEY),
                 KeycloakSamlExtension.getResourceDescriptionResolver(Constants.Model.KEY),
                 new KeyAddHandler(),
-                ReloadRequiredRemoveStepHandler.INSTANCE);
+                KeyRemoveHandler.INSTANCE);
     }
 
     @Override

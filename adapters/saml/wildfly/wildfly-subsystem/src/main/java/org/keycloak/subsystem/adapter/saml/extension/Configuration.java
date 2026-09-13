@@ -60,6 +60,22 @@ public class Configuration {
         node.set(model);
     }
 
+    void removeModel(final ModelNode operation) {
+        ModelNode node = config;
+        final List<Property> addressNodes = operation.get("address").asPropertyList();
+        final int lastIndex = addressNodes.size() - 1;
+        
+        // Navigate to the parent node
+        for (int i = 0; i < lastIndex; i++) {
+            Property addressNode = addressNodes.get(i);
+            node = node.get(addressNode.getName()).get(addressNode.getValue().asString());
+        }
+        
+        // Remove the target node
+        Property targetNode = addressNodes.get(lastIndex);
+        node.get(targetNode.getName()).remove(targetNode.getValue().asString());
+    }
+
     public ModelNode getSecureDeployment(DeploymentUnit deploymentUnit) {
         String name = preferredDeploymentName(deploymentUnit);
         ModelNode secureDeployment = config.get("subsystem").get("keycloak-saml").get(Constants.Model.SECURE_DEPLOYMENT);

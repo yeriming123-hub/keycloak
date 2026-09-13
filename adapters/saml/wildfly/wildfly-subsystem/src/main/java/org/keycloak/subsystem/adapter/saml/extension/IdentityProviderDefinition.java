@@ -22,7 +22,6 @@ import org.jboss.as.controller.AttributeDefinition;
 import org.jboss.as.controller.ObjectTypeAttributeDefinition;
 import org.jboss.as.controller.OperationStepHandler;
 import org.jboss.as.controller.PathElement;
-import org.jboss.as.controller.ReloadRequiredRemoveStepHandler;
 import org.jboss.as.controller.ReloadRequiredWriteAttributeHandler;
 import org.jboss.as.controller.SimpleAttributeDefinition;
 import org.jboss.as.controller.SimpleAttributeDefinitionBuilder;
@@ -100,7 +99,7 @@ public class IdentityProviderDefinition extends SimpleResourceDefinition {
         super(PathElement.pathElement(Constants.Model.IDENTITY_PROVIDER),
                 KeycloakSamlExtension.getResourceDescriptionResolver(Constants.Model.IDENTITY_PROVIDER),
                 new IdentityProviderAddHandler(),
-                ReloadRequiredRemoveStepHandler.INSTANCE);
+                IdentityProviderRemoveHandler.INSTANCE);
     }
 
     @Override
