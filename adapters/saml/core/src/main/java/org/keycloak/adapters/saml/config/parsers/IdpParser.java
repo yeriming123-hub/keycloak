@@ -48,7 +48,7 @@ public class IdpParser extends AbstractKeycloakSamlAdapterV1Parser<IDP> {
         idp.setEntityID(StaxParserUtil.getRequiredAttributeValueRP(element, KeycloakSamlAdapterV1QNames.ATTR_ENTITY_ID));
 
         Boolean signaturesRequired = StaxParserUtil.getBooleanAttributeValueRP(element, KeycloakSamlAdapterV1QNames.ATTR_SIGNATURES_REQUIRED);
-        idp.setSignaturesRequired(signaturesRequired == null ? false : signaturesRequired);
+        idp.setSignaturesRequired(signaturesRequired == null ? true : signaturesRequired);
         idp.setSignatureCanonicalizationMethod(StaxParserUtil.getAttributeValueRP(element, KeycloakSamlAdapterV1QNames.ATTR_SIGNATURE_CANONICALIZATION_METHOD));
         idp.setSignatureAlgorithm(StaxParserUtil.getAttributeValueRP(element, KeycloakSamlAdapterV1QNames.ATTR_SIGNATURE_ALGORITHM));
         idp.setMetadataUrl(StaxParserUtil.getAttributeValueRP(element, KeycloakSamlAdapterV1QNames.ATTR_METADATA_URL));
