@@ -274,8 +274,8 @@ public class KeycloakSamlAdapterXMLParserTest {
             assertThat(idp.getSingleLogoutService().isValidateRequestSignature(), is(true));
             assertThat(idp.getSingleLogoutService().isValidateResponseSignature(), is(true));
 
-            // This is false by default
-            assertThat(idp.getSingleSignOnService().isValidateAssertionSignature(), is(false));
+            // This should also take default from IDP.signaturesRequired
+            assertThat(idp.getSingleSignOnService().isValidateAssertionSignature(), is(true));
         } finally {
             System.clearProperty("keycloak-saml-properties.entityID");
             System.clearProperty("keycloak-saml-properties.sslPolicy");

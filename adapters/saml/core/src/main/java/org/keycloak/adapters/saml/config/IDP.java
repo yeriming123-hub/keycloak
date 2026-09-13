@@ -55,7 +55,7 @@ public class IDP implements Serializable {
         }
 
         public boolean isValidateAssertionSignature() {
-            return validateAssertionSignature == null ? false : validateAssertionSignature;
+            return validateAssertionSignature == null ? signaturesRequired : validateAssertionSignature;
         }
 
         public void setValidateAssertionSignature(Boolean validateAssertionSignature) {
