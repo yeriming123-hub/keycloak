@@ -65,7 +65,9 @@ jobs:
         id: auroradb-tests
         run: |
           RUN_AURORADB_TESTS=false
-          if [[ $GITHUB_EVENT_NAME != "pull_request" && -n "${AWS_SECRET_ACCESS_KEY}" ]]; then
+          # Only run credential-bearing tests on pull requests (immutable workflow definition from base)
+          # or on protected branches (main). Never on ordinary branch pushes where workflow is mutable.
+          if [[ ( $GITHUB_EVENT_NAME == "pull_request" || $GITHUB_REF == "refs/heads/main" ) && -n "${AWS_SECRET_ACCESS_KEY}" ]]; then
             RUN_AURORADB_TESTS=true
           fi
           echo "run-aurora-tests=$RUN_AURORADB_TESTS" >> $GITHUB_OUTPUT
@@ -76,7 +78,9 @@ jobs:
         id: azure-tests
         run: |
           RUN_AZURE_TESTS=false
-          if [[ $GITHUB_EVENT_NAME != "pull_request" && -n "${AZURE_CREDENTIALS}" ]]; then
+          # Only run credential-bearing tests on pull requests (immutable workflow definition from base)
+          # or on protected branches (main). Never on ordinary branch pushes where workflow is mutable.
+          if [[ ( $GITHUB_EVENT_NAME == "pull_request" || $GITHUB_REF == "refs/heads/main" ) && -n "${AZURE_CREDENTIALS}" ]]; then
             RUN_AZURE_TESTS=true
           fi
           echo "run-azure-tests=$RUN_AZURE_TESTS" >> $GITHUB_OUTPUT
@@ -87,7 +91,9 @@ jobs:
         id: additional-dbs-tests
         run: |
           RUN_ADDITIONAL_DBS_TESTS=false
-          if [[ $GITHUB_EVENT_NAME != "pull_request" && -n "${PRIVATE_DBS_QUAY_USERNAME}" && -n "${PRIVATE_DBS_QUAY_TOKEN}" ]]; then
+          # Only run credential-bearing tests on pull requests (immutable workflow definition from base)
+          # or on protected branches (main). Never on ordinary branch pushes where workflow is mutable.
+          if [[ ( $GITHUB_EVENT_NAME == "pull_request" || $GITHUB_REF == "refs/heads/main" ) && -n "${PRIVATE_DBS_QUAY_USERNAME}" && -n "${PRIVATE_DBS_QUAY_TOKEN}" ]]; then
             RUN_ADDITIONAL_DBS_TESTS=true
           fi
           echo "run-additional-dbs-tests=$RUN_ADDITIONAL_DBS_TESTS" >> $GITHUB_OUTPUT
