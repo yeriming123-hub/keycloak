@@ -146,7 +146,7 @@ public class PermissionsTest extends AbstractPermissionsTest {
         ClientRepresentation foo = managedRealm1.admin().clients().findByClientId("foo").get(0);
 
         invoke(realm -> realm.clients().get(foo.getId()).toRepresentation(), Resource.CLIENT, false);
-        invoke(realm -> realm.clients().get(foo.getId()).getInstallationProvider("nosuch"), Resource.CLIENT, false);
+        invoke(realm -> realm.clients().get(foo.getId()).getInstallationProvider("nosuch"), Resource.CLIENT, true);
         invoke(realm -> realm.clients().get(foo.getId()).update(foo), Resource.CLIENT, true);
         invoke(realm -> {
             realm.clients().get(foo.getId()).remove();
