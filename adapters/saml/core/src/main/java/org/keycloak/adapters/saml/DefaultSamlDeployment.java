@@ -262,10 +262,20 @@ public class DefaultSamlDeployment implements SamlDeployment {
             if (! this.signatureValidationKeys.isEmpty()) {
                 this.signatureValidationKeyLocator.add(new HardcodedKeyLocator(this.signatureValidationKeys));
             } else if (this.singleSignOnService != null) {
+                String metadataUrl = getMetadataUrl();
+                
+                // Enforce HTTPS for dynamic key discovery to prevent on-path attacks
+                if (metadataUrl != null && !metadataUrl.startsWith("https://")) {
+                    throw new RuntimeException(
+                        "SAML adapter dynamic key discovery requires HTTPS metadata URL. " +
+                        "Configured metadata URL '" + metadataUrl + "' uses insecure transport. " +
+                        "Either configure an HTTPS metadata URL or provide static signature validation keys.");
+                }
+                
                 HttpClient httpClient = getClient();
                 SamlDescriptorPublicKeyLocator samlDescriptorPublicKeyLocator =
                   new SamlDescriptorPublicKeyLocator(
-                    getMetadataUrl(), this.minTimeBetweenDescriptorRequests, DEFAULT_CACHE_TTL, httpClient);
+                    metadataUrl, this.minTimeBetweenDescriptorRequests, DEFAULT_CACHE_TTL, httpClient);
                 this.signatureValidationKeyLocator.add(samlDescriptorPublicKeyLocator);
             }
         }
